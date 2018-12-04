@@ -29,7 +29,7 @@
 
 using namespace arangodb;
 
-ReplicationApplierState::ReplicationApplierState() 
+ReplicationApplierState::ReplicationApplierState()
     : _lastProcessedContinuousTick(0),
       _lastAppliedContinuousTick(0),
       _lastAvailableContinuousTick(0),
@@ -65,7 +65,7 @@ ReplicationApplierState& ReplicationApplierState::operator=(ReplicationApplierSt
   _lastError.code = other._lastError.code;
   _lastError.message = other._lastError.message;
   memcpy(&_lastError.time[0], &other._lastError.time[0], sizeof(_lastError.time));
-  
+
   _failedConnects = other._failedConnects;
   _totalRequests = other._totalRequests;
   _totalFailedConnects = other._totalFailedConnects;
@@ -76,7 +76,7 @@ ReplicationApplierState& ReplicationApplierState::operator=(ReplicationApplierSt
   return *this;
 }
 
-void ReplicationApplierState::reset(bool resetState) {
+void ReplicationApplierState::reset(bool resetPhase) {
   _lastProcessedContinuousTick = 0;
   _lastAppliedContinuousTick = 0;
   _lastAvailableContinuousTick = 0;
@@ -87,15 +87,15 @@ void ReplicationApplierState::reset(bool resetState) {
   _progressTime[0] = '\0';
   _serverId = 0;
   _lastError.reset();
-      
+
   _failedConnects = 0;
   _totalRequests = 0;
   _totalFailedConnects = 0;
   _totalEvents = 0;
   _totalResyncs = 0;
   _skippedOperations = 0;
-  
-  if (resetState) {
+
+  if (resetPhase) {
     _phase = ActivityPhase::INACTIVE;
   }
 }
@@ -177,9 +177,9 @@ void ReplicationApplierState::toVelocyPack(VPackBuilder& result, bool full) cons
     TRI_GetTimeStampReplication(timeString, sizeof(timeString) - 1);
     result.add("time", VPackValue(&timeString[0]));
   } else {
-    result.add("serverId", VPackValue(std::to_string(_serverId))); 
-    result.add("lastProcessedContinuousTick", VPackValue(std::to_string(_lastProcessedContinuousTick))); 
-    result.add("lastAppliedContinuousTick", VPackValue(std::to_string(_lastAppliedContinuousTick))); 
+    result.add("serverId", VPackValue(std::to_string(_serverId)));
+    result.add("lastProcessedContinuousTick", VPackValue(std::to_string(_lastProcessedContinuousTick)));
+    result.add("lastAppliedContinuousTick", VPackValue(std::to_string(_lastAppliedContinuousTick)));
     result.add("safeResumeTick", VPackValue(std::to_string(_safeResumeTick)));
   }
 

@@ -45,17 +45,17 @@ struct ReplicationApplierState {
 
   ReplicationApplierState();
   ~ReplicationApplierState();
-  
+
   ReplicationApplierState(ReplicationApplierState const& other) = delete;
   ReplicationApplierState& operator=(ReplicationApplierState const& other);
 
-  void reset(bool resetState);
+  void reset(bool resetPhase);
   void toVelocyPack(arangodb::velocypack::Builder& result, bool full) const;
 
   bool hasProcessedSomething() const {
     return (_lastProcessedContinuousTick > 0 || _lastAppliedContinuousTick > 0 || _safeResumeTick > 0);
   }
-   
+
   TRI_voc_tick_t _lastProcessedContinuousTick;
   TRI_voc_tick_t _lastAppliedContinuousTick;
   TRI_voc_tick_t _lastAvailableContinuousTick;
@@ -63,22 +63,22 @@ struct ReplicationApplierState {
   ActivityPhase _phase;
   bool _preventStart;
   bool _stopInitialSynchronization;
-  
+
   std::string _progressMsg;
   char _progressTime[24];
   TRI_server_id_t _serverId;
-  
+
   /// performs initial sync or running tailing syncer
   bool isActive() const {
     return (_phase == ActivityPhase::INITIAL ||
             _phase == ActivityPhase::TAILING);
   }
-  
+
   /// performs initial sync or running tailing syncer
   bool isInitializing() const {
     return _phase == ActivityPhase::INITIAL;
   }
-  
+
   /// performs tailing sync
   bool isTailing() const {
     return (_phase == ActivityPhase::TAILING);
@@ -95,11 +95,11 @@ struct ReplicationApplierState {
   void clearError() {
     _lastError.reset();
   }
-  
+
   // last error that occurred during replication
   struct LastError {
-    LastError() : code(TRI_ERROR_NO_ERROR), message() { 
-      time[0] = '\0'; 
+    LastError() : code(TRI_ERROR_NO_ERROR), message() {
+      time[0] = '\0';
     }
 
     void reset() {
