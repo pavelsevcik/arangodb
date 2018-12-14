@@ -141,7 +141,7 @@
 
       $.ajax({
         type: 'GET',
-        url: arangoHelper.databaseUrl('/_admin/aardvark/graph/' + encodeURIComponent(this.name)),
+        url: arangoHelper.databaseUrl('/aardvark/graph/' + encodeURIComponent(this.name)),
         contentType: 'application/json',
         data: ajaxData,
         success: function (data) {
@@ -611,7 +611,7 @@
         self.fetchStarted = new Date();
         $.ajax({
           type: 'GET',
-          url: arangoHelper.databaseUrl('/_admin/aardvark/graph/' + encodeURIComponent(self.name)),
+          url: arangoHelper.databaseUrl('/aardvark/graph/' + encodeURIComponent(self.name)),
           contentType: 'application/json',
           data: ajaxData,
           success: function (data) {
@@ -1573,7 +1573,7 @@
 
       $.ajax({
         type: 'GET',
-        url: arangoHelper.databaseUrl('/_admin/aardvark/graph/' + encodeURIComponent(this.name)),
+        url: arangoHelper.databaseUrl('/aardvark/graph/' + encodeURIComponent(this.name)),
         contentType: 'application/json',
         data: ajaxData,
         success: function (data) {
@@ -2073,7 +2073,7 @@
                   }
                   _.each(data.documents[0], function (value, key) {
                     if (key !== '_key' && key !== '_id' && key !== '_rev' && key !== '_from' && key !== '_to') {
-                      attributes += '<span class="nodeAttribute">' + key + '</span>';
+                      attributes += '<span class="nodeAttribute">' + key + ':' + value + '</span>';
                     }
                   });
                   var string = '<div id="nodeInfoDiv" class="nodeInfoDiv" style="display: none;">' + attributes + '</div>';

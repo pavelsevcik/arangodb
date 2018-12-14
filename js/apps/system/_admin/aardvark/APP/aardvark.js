@@ -150,7 +150,7 @@ authRouter.post('/query/profile', function (req, res) {
 
   try {
     msg = explainer.profileQuery({
-      query, 
+      query,
       bindVars: bindVars || {},
       options: {
         colors: false,
@@ -366,12 +366,12 @@ authRouter.post('/graph-examples/create/:name', function (req, res) {
 authRouter.post('/job', function (req, res) {
   let frontend = db._collection('_frontend');
   if (!frontend) {
-    frontend = db._create('_frontend', { 
+    frontend = db._create('_frontend', {
       isSystem: true,
       waitForSync: false,
-      journalSize: 1024 * 1024, 
+      journalSize: 1024 * 1024,
       replicationFactor: internal.DEFAULT_REPLICATION_FACTOR_SYSTEM,
-      distributeShardsLike: '_graphs' 
+      distributeShardsLike: '_graphs'
     });
   }
   frontend.save(Object.assign(req.body, {model: 'job'}));
@@ -759,14 +759,13 @@ authRouter.get('/graph/:name', function (req, res) {
           if (config.edgeLabel && config.edgeLabel.length > 0) {
             // configure edge labels
 
-            if (config.edgeLabel.indexOf('.') > -1) {
-              edgeLabel = getAttributeByKey(edge, config.edgeLabel);
-              if (nodeLabel === undefined || nodeLabel === '') {
-                edgeLabel = edgeLabel._id;
+            edgeLabel = config.edgeLabel.split(',').map(function (edgeLabelItem) {
+              if (edgeLabelItem.indexOf('.') > -1) {
+                return getAttributeByKey(edge, edgeLabelItem);
+              } else {
+                return edge[edgeLabelItem];
               }
-            } else {
-              edgeLabel = edge[config.edgeLabel];
-            }
+            }).join(',');
 
             if (typeof edgeLabel !== 'string') {
               edgeLabel = JSON.stringify(edgeLabel);
@@ -844,14 +843,13 @@ authRouter.get('/graph/:name', function (req, res) {
           nodeNames[node._id] = true;
 
           if (config.nodeLabel) {
-            if (config.nodeLabel.indexOf('.') > -1) {
-              nodeLabel = getAttributeByKey(node, config.nodeLabel);
-              if (nodeLabel === undefined || nodeLabel === '') {
-                nodeLabel = node._id;
+            nodeLabel = config.nodeLabel.split(',').map(function (nodeLabelItem) {
+              if (nodeLabelItem.indexOf('.') > -1) {
+                return getAttributeByKey(node, nodeLabelItem);
+              } else {
+                return node[nodeLabelItem];
               }
-            } else {
-              nodeLabel = node[config.nodeLabel];
-            }
+            }).join(',');
           } else {
             nodeLabel = node._key;
           }
